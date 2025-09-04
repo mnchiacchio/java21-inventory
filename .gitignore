@@ -35,3 +35,6 @@ build/
 *.iml
 *.ipr
 *.iws
+
+# Private documentation (not for repository)
+private/
