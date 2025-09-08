@@ -1,8 +1,8 @@
-# Inventory API
+# Java21-Inventory API
 
 ## 📋 Descripción del Proyecto
 
-**Inventory API** es una API REST desarrollada en Spring Boot para la gestión de inventario de productos. Este proyecto funciona como un **sandbox experimental** para explorar y experimentar con las últimas características de Java 21, incluyendo:
+**Java21-Inventory API** es una API REST desarrollada en Spring Boot para la gestión de inventario de productos. Este proyecto funciona como un **sandbox experimental** para explorar y experimentar con las últimas características de Java 21, incluyendo:
 
 - **Virtual Threads** de Java 21 para manejo eficiente de concurrencia
 - **Spring WebFlux** para programación reactiva
@@ -50,13 +50,13 @@ src/main/java/com/example/inventory/
 1. **Clonar el repositorio** (si no lo has hecho):
    ```bash
    git clone <url-del-repositorio>
-   cd inventory
+   cd java21-inventory
    ```
 
 2. **Abrir terminal** en la raíz del proyecto:
    ```bash
    # Navegar a la carpeta del proyecto
-   cd inventory
+   cd java21-inventory
    ```
 
 3. **Ejecutar la aplicación**:
