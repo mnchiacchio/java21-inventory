@@ -98,14 +98,14 @@ public class InventoryService {
     public CompletableFuture<String> stressTest(int requests) {
         // Crear un array de CompletableFuture para todas las operaciones
         @SuppressWarnings("unchecked")
-        CompletableFuture<Void>[] futures = new CompletableFuture[requests];
+        CompletableFuture<Boolean>[] futures = new CompletableFuture[requests];
         
         // Lanzar múltiples operaciones concurrentes usando Virtual Threads
         for (int i = 0; i < requests; i++) {
             final int requestNumber = i;
             
             // Cada operación se ejecuta en un Virtual Thread separado
-            futures[i] = CompletableFuture.runAsync(() -> {
+            futures[i] = CompletableFuture.supplyAsync(() -> {
                 try {
                     // Simular diferentes tipos de operaciones
                     if (requestNumber % 4 == 0) {
@@ -126,18 +126,41 @@ public class InventoryService {
                     // Simular un pequeño delay para simular operaciones I/O
                     Thread.sleep(10);
                     
+                    return true; // Operación exitosa
+                    
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    return false; // Operación fallida
+                } catch (Exception e) {
+                    // Cualquier otra excepción también se considera fallida
+                    return false;
                 }
             }, virtualThreadExecutor);
         }
         
-        // Esperar a que todas las operaciones terminen
+        // Esperar a que todas las operaciones terminen y contar resultados
         return CompletableFuture.allOf(futures)
                 .thenApply(v -> {
+                    // Contar operaciones exitosas
+                    long successfulOperations = 0;
+                    for (CompletableFuture<Boolean> future : futures) {
+                        try {
+                            if (future.get()) {
+                                successfulOperations++;
+                            }
+                        } catch (Exception e) {
+                            // Si no se puede obtener el resultado, se considera fallida
+                        }
+                    }
+                    
+                    long failedOperations = requests - successfulOperations;
                     long totalItems = inventoryRepository.count();
-                    return String.format("Stress test completado: %d operaciones ejecutadas concurrentemente. " +
-                            "Total de items en inventario: %d", requests, totalItems);
+                    
+                    return String.format(
+                        "Stress test completado: %d operaciones enviadas, %d exitosas, %d fallidas. " +
+                        "Total de items en inventario: %d", 
+                        requests, successfulOperations, failedOperations, totalItems
+                    );
                 });
     }
     
